@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
+import 'package:flutter_web_socket_app_demo/message.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChatPage extends StatefulWidget {
@@ -220,9 +221,3 @@ class _ChatPageState extends State<ChatPage> {
   }
 }
 
-class Message {
-  String text;
-  String base64Image;
-
-  Message(this.text, this.base64Image);
-}
