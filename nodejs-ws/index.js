@@ -1,23 +1,22 @@
-var WebSocket = require('ws');
 
-var port = process.env.PORT || 3000;
+const app = require('express')()
+const port = 3000
+const http = require('http').createServer(app)
+console.log("started")
 
-var server = new WebSocket.Server(
-    {
-        port: port,
-    }
-)
+app.get('/', (req, res) => {
+    res.send("Node Server is running. Yay!!")
+})
 
-let msg = "Server: Welcome!";
+//Socket Logic
+const socketio = require('socket.io')(http)
 
-server.on('connection', function connection(client) {
-    client.send(msg);
-    client.on('message', function incoming(message) {
-        msg = message;
-        for (var cl of server.clients) {
-            cl.send(message, {binary:false});
-            
-        }
-        console.log("Received the following message:\n" + message);
-    });
-});
+socketio.on("connection", (userSocket) => {
+    console.log('a user connected');
+    userSocket.on("send_message", (data) => {
+        console.log(data);
+        userSocket.broadcast.emit("receive_message", data)
+    })
+})
+
+http.listen(port)

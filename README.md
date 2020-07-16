@@ -1,5 +1,11 @@
 flutter-web-socket-demo
 
+## Description
+
+This app lets two devices send messages to each other via a NodeJS intermediate Websocket server. This flutter application is inspired by https://medium.com/flutter-community/realtime-chat-app-flutter-node-js-socket-io-e298cd27fb06
+
+This Flutter application add the ability to send a image over web sockets. It leverages the Flutter Image_Picker plugin for ease of use.
+
 ## Node Setup Instructions
 
 1. cd into nodejs-ws
@@ -7,16 +13,7 @@ flutter-web-socket-demo
 3. then "node index.js"
 
 ## Flutter Setup Instructions
-1. In flutter project, under flutter_websocker_app_demo
+1. In flutter project, under flutter_websocket_app_demo
 2. change your host ip in MyApp
 3. channel: IOWebSocketChannel.connect('ws://192.168.1.XX:3000'),
-
-A helper boolean is set 
- //Uncomment to test image, note this crashes the app
-  bool textOnly = true;
-
-This allows you to just send text message, as of now this works great, its an echo server, just sends back what you send it
-
-If you uncomment "bool textOnly = true;"
-
-You can use the image picker to send a image. Right now the image picker to send an image over web socket is broken. Pull requests are welcome. 
+4. Run device on two device to establish two-way communication.
