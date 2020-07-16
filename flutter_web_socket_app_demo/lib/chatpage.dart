@@ -52,10 +52,10 @@ class _ChatPageState extends State<ChatPage> {
     socketIO.subscribe('receive_message', (jsonData) {
       //Convert the JSON data received into a Map
       Map<String, dynamic> data = json.decode(jsonData);
-      if (data['img'] !=null ) {
+      if (data['img'] != null) {
         this.setState(() => messages.add(new Message(null, data['img'])));
       } else {
-        this.setState(() => messages.add(new Message(data['message'],null )));
+        this.setState(() => messages.add(new Message(data['message'], null)));
       }
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
@@ -71,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget buildSingleMessage(int index) {
     Message myMessage = messages[index];
 
-    if (myMessage.text != null) {
+    if (myMessage.base64Image != null) {
       return Container(
         alignment: Alignment.centerLeft,
         child: Container(
@@ -81,27 +81,25 @@ class _ChatPageState extends State<ChatPage> {
             color: Colors.deepPurple,
             borderRadius: BorderRadius.circular(20.0),
           ),
-      
+          child: Image.memory(getImageFromBase64(myMessage.base64Image)),
+        ),
+      );
+    } else {
+      return Container(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.all(20.0),
+          margin: const EdgeInsets.only(bottom: 20.0, left: 20.0),
+          decoration: BoxDecoration(
+            color: Colors.deepPurple,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
           child: Text(
             myMessage.text,
             style: TextStyle(color: Colors.white, fontSize: 15.0),
           ),
         ),
       );
-    }
-     if (myMessage.base64Image!=null ) {
-        return Container(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.all(20.0),
-        margin: const EdgeInsets.only(bottom: 20.0, left: 20.0),
-        decoration: BoxDecoration(
-          color: Colors.deepPurple,
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child:   Image.memory(getImageFromBase64(myMessage.base64Image)),
-      ),
-    );
     }
   }
 
@@ -177,22 +175,33 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: height * 0.1),
-            buildMessageList(),
-             RaisedButton(
-              child: Text("Image"),
-              onPressed: getImage,
-            ),
-            buildInputArea(),
-           
-          ],
-        ),
-      ),
-    );
+
+    return Scaffold(body: SafeArea(
+      child: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    minWidth: constraints.maxWidth,
+                    minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(mainAxisSize: MainAxisSize.max, children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 6.0),
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: buildMessageList(),
+                      ),
+                    ),
+                    RaisedButton(
+                      child: Text("Image"),
+                      onPressed: getImage,
+                    ),
+                    buildInputArea(),
+                  ]),
+                )));
+      }),
+    ));
   }
 
   void _sendImageMessage2() {
@@ -217,7 +226,6 @@ class _ChatPageState extends State<ChatPage> {
     socketIO.sendMessage('send_message', json.encode({'img': base64}));
 
     //this is the inline preview
-    this.setState(() => messages.add(Message(null,base64)));
+    this.setState(() => messages.add(Message(null, base64)));
   }
 }
-
