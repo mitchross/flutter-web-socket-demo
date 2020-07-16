@@ -1,5 +1,5 @@
 # flutter-web-socket-demo
-
+<img src="webrtc_flutter.png" height="500px">
 ## Description
 
 This app lets two devices send messages to each other via a NodeJS intermediate Websocket server. This flutter application is inspired by https://medium.com/flutter-community/realtime-chat-app-flutter-node-js-socket-io-e298cd27fb06
